@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+service ar_condicionado{
+    rpc ar_condicionado_on(    info_request) returns (ar_condicionado_info) {}
+    rpc ar_condicionado_off(   info_request) returns (ar_condicionado_info) {}
+    rpc ar_condicionado_status(info_request) returns (ar_condicionado_info) {}
+    rpc ar_condicionado_temp(  info_request) returns (ar_condicionado_info) {}
+    rpc close_connection(info_request) returns (ar_condicionado_info) {}
+}
+service lampada{
+    rpc lampada_on( info_request) returns (lampada_info) {}
+    rpc lampada_off(info_request) returns (lampada_info) {}
+    rpc lampada_status(info_request) returns (lampada_info) {}
+}
+service geladeira{
+    rpc ar_condicionado_on(    info_request) returns (geladeira_info) {}
+    rpc ar_condicionado_off(   info_request) returns (geladeira_info) {}
+    rpc ar_condicionado_status(info_request) returns (geladeira_info) {}
+    rpc ar_condicionado_temp(  change_temp ) returns (geladeira_info) {}
+}
+service gateway_interface{
+    rpc use_device(   info_request) returns (geladeira_info) {}    
+}
+
+message use_request{
+    string device_name   = 1 ;
+    string method = 2 ;
+    string service = 3 ;
+    optional string args  = 4 ;
+}
+message device_discover{
+    string name = 1 ;
+    string device_type = 2 ;
+    int32 port = 3 ;
+}
+message info_request{
+    string name = 1;
+    optional int32 new_temp = 2 ;
+    string method = 3 ;
+    string service = 4 ;
+}
+message lampada_request{
+    string name = 1;
+}
+message change_temp{
+    string name = 1 ; 
+    int32 new_temp = 2 ;
+}
+
+message lampada_info{
+    bool on = 1;
+    string name = 2;
+}
+message ar_condicionado_info {
+    bool on = 1;
+    int32 temperature = 2 ;
+}
+message geladeira_info {
+    bool on = 1;
+    int32 temperature = 2 ;
+}
+
+
