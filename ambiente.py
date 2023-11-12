@@ -14,7 +14,8 @@ iluminado = False
 
 
 gateway = gateway_server_skt()
-gateway.find_devices()
+# gateway.find_devices()
+gateway.find_grpc_connections()
 gateway.start_server()
 
 # td1 = threading.Thread(target = gateway.find_devices , args=())

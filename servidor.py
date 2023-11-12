@@ -36,7 +36,9 @@ class gateway_server_skt():
         self.channels = {}
 
         print("Server Ligado ", server_Name )
-    
+
+    #USANDO SOCKETS :
+
     def find_devices(self , timer = 3) :
         # Criação de um socket UDP
         sock = socket(AF_INET, SOCK_DGRAM , IPPROTO_UDP)
@@ -255,6 +257,9 @@ class gateway_server_skt():
             td = threading.Thread(target = self.handle_request , args=(client, addr))
             td.start()
 
+
+    #USANDO GRPC :
+
     def find_grpc_connections(self , timer = 3) :
         # Criação de um socket UDP
         sock = socket(AF_INET, SOCK_DGRAM , IPPROTO_UDP)
@@ -443,8 +448,6 @@ class gateway_server_skt():
             return
         else:
             print("Serviço ou método desconhecido")
-
-
 
     def start_grpc_connections(self):
         print("[Tentando Estabelecer conexões grpc...]")
