@@ -1,4 +1,5 @@
 import devices_pb2
+from devices_pb2_grpc import *
 from socket import *
 import threading
 from abc import ABC, abstractmethod
@@ -17,7 +18,7 @@ class device_interface(ABC):
 DE QUEM QUEIRA SE CONECTAR AO SISTEMA SERVINDO COMO A INTERFACE COM O MUNDO EXTERNO"""
 
 
-class ar_condicionado(device_interface):
+class ar_condicionado(device_interface , ar_condicionadoServicer):
 
     def __init__(self , name : str ="Brastemp_Eletrolux" , on: bool = True, temperature : int = 20  ,
                  server_Name = gethostbyname(gethostname()) , server_Port = 50051  ) -> None:
@@ -52,7 +53,49 @@ class ar_condicionado(device_interface):
                 
                 return
             
+    def ar_condicionado_on(self , request , context ):
+        self.on = True
 
+        response = devices_pb2.ar_condicionado_info()
+        response.on = self.on
+        response.temperature = self.temperature
+
+        return response
+        # return super.ar_condicionado_on(request , context )
+    def ar_condicionado_off(self , request , context ):
+        self.on = False
+        
+        response = devices_pb2.ar_condicionado_info()
+        response.on = self.on
+        response.temperature = self.temperature
+
+        return response
+    
+    def ar_condicionado_status(self , request , context ):
+        
+        response = devices_pb2.ar_condicionado_info()
+        response.on = True
+        response.temperature = self.temperature
+
+        return response
+    
+    def ar_condicionado_temp(self , request , context ):
+        self.temperature = request.new_temp
+        
+        response = devices_pb2.ar_condicionado_info()
+        response.on = True
+        response.temperature = self.temperature
+
+        return response
+    
+    def serve(self):
+        server = grpc.server(grpc.insecure_port("[::]:50051"))
+        devices_pb2_grpc.add_ar_condicionadoServicer_to_server(ar_condicionado(), server)
+        server.start()
+        print("Servidor gRPC da ar_condicionado em execução...")
+        server.wait_for_termination()
+    
+    
     def send_info_2_multicast(self , timer = 10):
         # Criação de um socket UDP
         sock = socket( AF_INET , SOCK_DGRAM , IPPROTO_UDP )
@@ -161,6 +204,40 @@ class lampada(device_interface):
         
         print("Server Ligado ", server_Name )
     
+    def lampada_on(self , request , context ):
+        self.on = True
+
+        response = devices_pb2.lampada_info()
+        response.on = self.on
+        # response.temperature = self.temperature
+
+        return response
+        # return super.ar_condicionado_on(request , context )
+    def lampada_off(self , request , context ):
+        self.on = False
+        
+        response = devices_pb2.lampada_info()
+        response.on = self.on
+        # response.temperature = self.temperature
+
+        return response
+    
+    def lampada_status(self , request , context ):
+        
+        response = devices_pb2.lampada_info()
+        response.on = True
+        # response.temperature = self.temperature
+
+        return response
+    
+    def serve(self):
+        server = grpc.server(grpc.insecure_port("[::]:50051"))
+        devices_pb2_grpc.add_lampadaServicer_to_server(lampada(), server)
+        server.start()
+        print("Servidor gRPC da lampada em execução...")
+        server.wait_for_termination()
+    
+
     def tcp_connect(self , timeout = 6):
         client , addr = None , None
         print("lampada aberto a novas conexões TCP")
@@ -288,6 +365,49 @@ class geladeira(device_interface):
         
         print("Server Ligado ", server_Name )
     
+    def ar_condicionado_on(self , request , context ):
+        self.on = True
+
+        response = devices_pb2.geladeira_info()
+        response.on = self.on
+        response.temperature = self.temperature
+
+        return response
+        # return super.ar_condicionado_on(request , context )
+    def ar_condicionado_off(self , request , context ):
+        self.on = False
+        
+        response = devices_pb2.geladeira_info()
+        response.on = self.on
+        response.temperature = self.temperature
+
+        return response
+    
+    def ar_condicionado_status(self , request , context ):
+        
+        response = devices_pb2.geladeira_info()
+        response.on = True
+        response.temperature = self.temperature
+
+        return response
+    
+    def ar_condicionado_temp(self , request , context ):
+        self.temperature = request.new_temp
+        
+        response = devices_pb2.geladeira_info()
+        response.on = True
+        response.temperature = self.temperature
+
+        return response
+    
+    def serve(self):
+        server = grpc.server(grpc.insecure_port("[::]:50051"))
+        devices_pb2_grpc.add_geladeiraServicer_to_server(geladeira(), server)
+        server.start()
+        print("Servidor gRPC da geladeira em execução...")
+        server.wait_for_termination()
+
+
     def tcp_connect(self , timeout = 6):
         client , addr = None , None
         print("geladeira aberto a novas conexões TCP")
